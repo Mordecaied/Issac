@@ -1,13 +1,47 @@
 import React, { useState } from 'react';
 import { MicrophoneIcon, VolumeUpIcon } from '@heroicons/react/solid';
+import { useAppContext, Topic } from '../AppContext';
 
 const VoiceAssistant: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
+  const { addTopic, setActiveSession } = useAppContext();
 
   const toggleListening = () => {
     setIsListening(!isListening);
     // Implement actual voice recognition logic here
+    // For now, we'll simulate voice input
+    if (!isListening) {
+      simulateVoiceInput();
+    }
+  };
+
+  const simulateVoiceInput = () => {
+    // This is a placeholder for actual voice recognition
+    setTimeout(() => {
+      const simulatedCommand = "Isaac, add topic Learning with subtopic Python";
+      setTranscript(simulatedCommand);
+      processCommand(simulatedCommand);
+      setIsListening(false);
+    }, 3000);
+  };
+
+  const processCommand = (command: string) => {
+    const addTopicRegex = /Isaac, add topic (\w+)(?: with subtopic (\w+))?/i;
+    const match = command.match(addTopicRegex);
+
+    if (match) {
+      const topicName = match[1];
+      const subTopicName = match[2];
+      const newTopic: Topic = {
+        id: Date.now().toString(),
+        name: topicName,
+        duration: 0,
+        subTopics: subTopicName ? [{ id: `${Date.now()}-sub`, name: subTopicName }] : [],
+      };
+      addTopic(newTopic);
+      setActiveSession(newTopic.id);
+    }
   };
 
   return (
@@ -26,7 +60,7 @@ const VoiceAssistant: React.FC = () => {
         {isListening ? 'Stop Listening' : 'Start Listening'}
       </button>
       <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-        Say "Isaac, add question to [topic]: [your question]"
+        Say "Isaac, add topic [topic name] with subtopic [subtopic name]"
       </p>
       {isListening && (
         <div className="mt-4 p-2 bg-gray-100 dark:bg-gray-700 rounded">

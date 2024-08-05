@@ -1,6 +1,6 @@
 import React from 'react';
-import Dashboard from './components/Dashboard/Dashboard';
-import { AppProvider } from './contexts/AppContext';
+import Dashboard from './components/Dashboard';
+import { AppProvider } from './AppContext';
 
 const App: React.FC = () => {
   return (

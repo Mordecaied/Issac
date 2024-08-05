@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import VoiceAssistant from './VoiceAssistant';
 import TopicList from './TopicList';
 import CurrentSession from './CurrentSession';
 import Statistics from './Statistics';
 import { Tab } from '@headlessui/react';
+import { useAppContext } from '../AppContext';
 
 const Dashboard: React.FC = () => {
-  const [activeSession, setActiveSession] = useState<string | null>(null);
+  const { activeSession } = useAppContext();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -33,8 +34,8 @@ const Dashboard: React.FC = () => {
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel>
-            <CurrentSession activeSession={activeSession} />
-            <TopicList setActiveSession={setActiveSession} />
+            <CurrentSession />
+            <TopicList />
           </Tab.Panel>
           <Tab.Panel>
             <Statistics />

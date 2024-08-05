@@ -1,29 +1,23 @@
 import React, { useState } from 'react';
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/solid';
 import { Disclosure } from '@headlessui/react';
+import { useAppContext, Topic, SubTopic } from '../AppContext';
 
-interface Topic {
-  id: number;
-  name: string;
-  subTopics: { id: number; name: string }[];
-}
+const TopicList: React.FC = () => {
+  const { topics, setActiveSession, addTopic } = useAppContext();
+  const [newTopicName, setNewTopicName] = useState('');
 
-const initialTopics: Topic[] = [
-  { id: 1, name: 'Learning', subTopics: [{ id: 11, name: 'Python' }, { id: 12, name: 'React' }] },
-  { id: 2, name: 'Training', subTopics: [{ id: 21, name: 'Cardio' }, { id: 22, name: 'Weights' }] },
-  { id: 3, name: 'Trading', subTopics: [{ id: 31, name: 'Stocks' }, { id: 32, name: 'Crypto' }] },
-  { id: 4, name: 'Working', subTopics: [{ id: 41, name: 'Project A' }, { id: 42, name: 'Project B' }] },
-];
-
-interface TopicListProps {
-  setActiveSession: (session: string | null) => void;
-}
-
-const TopicList: React.FC<TopicListProps> = ({ setActiveSession }) => {
-  const [topics, setTopics] = useState(initialTopics);
-
-  const addNewTopic = () => {
-    // Implement add new topic logic
+  const handleAddNewTopic = () => {
+    if (newTopicName.trim()) {
+      const newTopic: Topic = {
+        id: Date.now().toString(),
+        name: newTopicName.trim(),
+        duration: 0,
+        subTopics: [],
+      };
+      addTopic(newTopic);
+      setNewTopicName('');
+    }
   };
 
   return (
@@ -35,12 +29,17 @@ const TopicList: React.FC<TopicListProps> = ({ setActiveSession }) => {
               <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 dark:text-blue-100 bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75">
                 <span>{topic.name}</span>
                 <ChevronDownIcon
-                  className={`${open ? 'transform rotate-180' : ''} w-5 h-5 text-blue-500`}
+                  className={`${
+                    open ? 'transform rotate-180' : ''
+                  } w-5 h-5 text-blue-500`}
                 />
               </Disclosure.Button>
               <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500 dark:text-gray-300">
-                {topic.subTopics.map((subTopic) => (
-                  <div key={subTopic.id} className="flex justify-between items-center mb-2">
+                {topic.subTopics.map((subTopic: SubTopic) => (
+                  <div
+                    key={subTopic.id}
+                    className="flex justify-between items-center mb-2"
+                  >
                     <span>{subTopic.name}</span>
                     <button
                       onClick={() => setActiveSession(`${topic.name} - ${subTopic.name}`)}
@@ -55,13 +54,22 @@ const TopicList: React.FC<TopicListProps> = ({ setActiveSession }) => {
           )}
         </Disclosure>
       ))}
-      <button
-        onClick={addNewTopic}
-        className="flex items-center justify-center w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
-      >
-        <PlusIcon className="h-5 w-5 mr-2" />
-        Add New Topic
-      </button>
+      <div className="flex space-x-2">
+        <input
+          type="text"
+          value={newTopicName}
+          onChange={(e) => setNewTopicName(e.target.value)}
+          placeholder="New topic name"
+          className="flex-grow px-3 py-2 border rounded-md"
+        />
+        <button
+          onClick={handleAddNewTopic}
+          className="flex items-center justify-center py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
+        >
+          <PlusIcon className="h-5 w-5 mr-2" />
+          Add Topic
+        </button>
+      </div>
     </div>
   );
 };
