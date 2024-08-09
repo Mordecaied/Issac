@@ -1,0 +1,10 @@
+﻿{
+    "name": "issac",
+    "version": "1.0.0",
+    "description": "Issac productivity app",
+    "scripts": {
+      "start": "cd frontend && npm start",
+      "build": "cd frontend && npm run build",
+      "install-frontend": "cd frontend && npm install"
+    }
+  }
